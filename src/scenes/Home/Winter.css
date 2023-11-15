@@ -1,0 +1,41 @@
+.hover-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.size-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.size-box {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 4px;
+    text-align: center;
+    flex: 1;
+    margin-right: 5px;
+    margin-bottom: 6px;
+}
+
+.size-text {
+    margin: 0; 
+    font-size: 10px;
+    color: #333;
+}
+
+.sidebar {
+    margin-left: 15px;
+    
+}
+.sort {
+    margin-left: 5px;
+}
+.row {
+    margin-left: 40px;
+}
+.row1 {
+    margin-right: 50rem;
+}
+.filter {
+    margin-left: 5px;
+}

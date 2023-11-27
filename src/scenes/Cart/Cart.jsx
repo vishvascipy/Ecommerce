@@ -1,71 +1,35 @@
-// // ProductPage.js
-
-// import React, { useState } from "react";
-// import { useParams } from "react-router-dom";
-// import ProductDetails from "../ProductDetails/ProductDetails";
-// import ad1 from "../../img/ad1.jpg"
-// import ad2 from "../../img/ad2.jpg"
-// import ad3 from "../../img/ad3.jpg"
-
-// function AddtoCart({ products, addToCart }) {
-//   // State to manage the shopping cart
-//   const { category, id, name } = useParams();
-//   const [cartItems, setCartItems] = useState([]);
-
-//   const handleAddToCart = (cartItem) => {
-//     // Update cartItems state with the new item
-//     setCartItems((prevItems) => [...prevItems, cartItem]);
-//   };
-
-
-//   return (
-//     <div>
-//       {/* Pass the products and addToCart function to ProductDetails */}
-//       <ProductDetails products={products} addToCart={handleAddToCart} />
-//       {/* <AddtoCart products={cart} addToCart={addToCart} /> */}
-//       {/* Render the shopping cart */}
-//       <h2>Shopping Cart</h2>
-//       <div className="card">
-//         {cartItems.map((item) => (
-//           <div key={item.id}>
-//             <img src={item.image} className="card-img-top" alt={item.name} />
-//             <p>Name:{item.name}</p>
-//             <p>Price: {item.price}</p>
-//             <p>Quantity: {item.quantity}</p>
-//             {/* Add more product details as needed */}
-//           </div>
-//         ))}
-//         {/* <p>Name: {name}</p>
-//         <p>Category: {category}</p>
-//         <p>Product ID: {id}</p> */}
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default AddtoCart;
-
-
-
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "./ContextCart";
 
 function AddtoCart() {
-  const { cartItems } = useCart();
+  const { cartItems, removeFromCart, savedItems, moveToSavedItems, removeFromSavedItems  } = useCart();
+
+  const handleRemove = (productId) => {
+    removeFromCart(productId);
+  };
+  const handleSaveForLater = (productId) => {
+    moveToSavedItems(productId);
+  }
+  const handleRemoveFromSaved = (productId) => {
+    removeFromSavedItems(productId);
+  };
+  const totalPrice = cartItems.reduce(
+    (accumulator, item) => accumulator + item.price * item.quantity,
+    0
+  );
   return (
     <div className="container mt-5">
       <h2>Shopping Cart</h2>
       {cartItems && cartItems.length > 0 ? (
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-2">
           {cartItems.map((item) => (
             <div key={item.id} className="col">
-              <div className="card justify-content-center">
+              <div className="card text-center d-flex flex-column align-items-center">
                 <div className="col-sm-8">
                   <img
                     src={item.image}
-                    className="img-fluid rounded-start"
+                    className="card-img-bottom rounded mx-auto mt-4"
                     alt={item.name}
                   />
                 </div>
@@ -73,22 +37,69 @@ function AddtoCart() {
                   <div className="card-body">
                     <h5 className="card-title">{item.name}</h5>
                     <p className="card-text">
-                      Price: {item.price} {/* Format the price if needed */}
+                      Price:<i className="bi bi-currency-rupee"></i>{item.price} {/* Format the price if needed */}
                     </p>
                     <p className="card-text">Quantity: {item.quantity}</p>
-                    <div className="w-100 d-flex justify-content-between">
-                      <button className="btn btn-sm btn-primary">Buy Now</button>
-                      <button className="btn btn-sm btn-danger">Remove</button>
+                    <div className=" d-flex justify-content-between">
+                      <button className="btn btn-sm btn-primary mr-3">Buy</button>
+                      <button className="btn btn-sm btn-danger mx-3" onClick={() => handleRemove(item.id)}>Remove</button>
+                      <button
+                        className="btn btn-sm btn-secondary ml-3" onClick={() => handleSaveForLater(item.id)}>Save
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           ))}
-          {/* <Link to="/checkout">Proceed to Checkout</Link> */}
+          {/* Display the total price card */}
+          <div className="col">
+            <div className="card text-center">
+              <div className="card-body">
+                <h5>Payment Infomation</h5>
+                <h5 className="card-title">Total Price</h5>
+                <p className="card-text">Total: {totalPrice}</p>
+                {/* Add any additional information or checkout button */}
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <p>Your cart is empty.</p>
+      )}
+      {/* Display the "Save for Later" section */}
+      {savedItems && savedItems.length > 0 && (
+        <div className="mt-4">
+          <h3>Saved for Later</h3>
+          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-2">
+            {savedItems.map((item) => (
+              <div key={item.id} className="col">
+                <div className="card text-center d-flex flex-column align-items-center">
+                  <div className="col-sm-8">
+                    <img
+                      src={item.image}
+                      className="card-img-bottom rounded mx-auto mt-4"
+                      alt={item.name}
+                    />
+                  </div>
+                  <div className="col-sm-8">
+                    <div className="card-body">
+                      <h5 className="card-title">{item.name}</h5>
+                      <p className="card-text">
+                        Price:<i className="bi bi-currency-rupee"></i>{item.price} {/* Format the price if needed */}
+                      </p>
+                      <p className="card-text">Quantity: {item.quantity}</p>
+                      <div className="w-100 d-flex justify-content-between">
+                        <button className="btn btn-sm btn-primary">Buy Now</button>
+                        <button className="btn btn-sm btn-danger" onClick={() => handleRemoveFromSaved(item.id)}>Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

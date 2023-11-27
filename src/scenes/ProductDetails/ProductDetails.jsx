@@ -101,21 +101,15 @@ const quantityReducer = (state, action) => {
     default:
       return state;
   }
-  // switch (action.type) {
-  //   case "SET_QUANTITY":
-  //     return { quantity: action.payload };
-  //   default:
-  //     return state;
-  // }
 };
 
 function ProductDetails({ products }) {
   console.log('addToCart in ProductDetails:', products);
   const { category, id } = useParams();
-  const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate()
   const { addToCart } = useCart();
   const [state, dispatch] = useReducer(quantityReducer, initialState)
+  const { quantity } = state;
 
   const handleQuantityChange = (newQuantity) => {
     dispatch({ type: "SET_QUANTITY", payload: newQuantity });
